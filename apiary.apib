@@ -1,80 +1,320 @@
 FORMAT: 1A
 HOST: http://polls.apiblueprint.org/
 
-# remitto
+# Remitto
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+Define all API for remitto, include:
+- User management
+- Category management
+- Transaction management
 
-## Questions Collection [/questions]
+#Group Category
+## Country management [/country]
+### Add new country [POST]
 
-### List All Questions [GET]
++ Request (application/json)
+
+        {
+            "name": "France",
+            "commonName": "Pháp",
+            "flag": "imagebase64Encoding"
+        }
+
+
++ Response 200 (application/json)
+
+        
+        {
+            "status": "DONE/FAIL",
+            "message": "Create Success/allready exist country with the same name"
+        }
+### Delete country [DELETE]
+
++ Request (application/json)
+
+        {
+            "name": "France",
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": "DONE/FAIL",
+            "message": "Create Success/allready exist country with the same name"
+        }
+    
+### List countrys [GET]
 
 + Response 200 (application/json)
 
         [
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
+                "name": "France",
+                "commonName": "Pháp",
+                "flag": "imagebase64Encoding"
+            },
+            {
+                "name": "Vietnam",
+                "commonName": "Việt Nam",
+                "flag": "imagebase64Encoding"
             }
         ]
-
-### Create a New Question [POST]
-
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
+## Currency management [/currency]
+### Get transfer rate [GET]
 
 + Request (application/json)
 
         {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
+            "fromCountryId": "12",
+            "toCountryId": "16",
         }
 
-+ Response 201 (application/json)
 
-    + Headers
++ Response 200 (application/json)
 
-            Location: /questions/2
+        
+        {
+            "fromCountryCurrency": "$",
+            "toCountryCurrency": "VND",
+            "transferRate":23.500
+        }
+        
+        
+### Update transfer rate [DELETE]
 
-    + Body
++ Request (application/json)
 
+        {
+            "fromCountryId": "12",
+            "toCountryId": "16",
+            "fromCountryCurrency": "$",
+            "toCountryCurrency": "VND",
+            "transferRate":23.500
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": "DONE/FAIL",
+            "message": "Update Success/have some error"
+        }
+    
+
+        
+## User management [/user]
+### Add new user [POST]
+
++ Request (application/json)
+
+        {
+            "userName": "nguyenvana",
+            "password": "123456",
+            "fulleName": "Nguyễn Văn A",
+            "dateOfBirth":"15/08/1972",
+            "phoneNumber":"84111346",
+            "skype":"bigboss",
+            "facebook":"http:\\facebook.com\phucdkbk",
+            "email":"bigboss@gmail.com"
+            
+        }
+
+
++ Response 200 (application/json)
+
+        
+        {
+            "status": "DONE/FAIL",
+            "message": "Create Success/allready exist user with the same userName"
+        }
+### Delete user [DELETE]
+
++ Request (application/json)
+
+        {
+            "userName": "nguyenvana",
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": "DONE/FAIL",
+            "message": "Create Success/allready exist country with the same name"
+        }
+
+#Group Authentication
+## Login [/login]
+### Get access token [POST]
++ request (application/json)
+
+        {
+            "userName": "nguyenvana",
+            "password": "123456",
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": "DONE/FAIL",
+            "accessToken":"kjahaksdjhkajshdfkasdjhf"
+            "message": "Login Sucess/User or Password does not exist"
+        }
+## Logout [/logout]
+### Get access token [POST]
++ request (application/json)
+
+        {
+            "accessToken":"kjahaksdjhkajshdfkasdjhf"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": "DONE/FAIL"
+            "message": "Logout Sucess/There is no existed access token with this value"
+          
+        }
+## Refresh token [/refreshtoken]
+### Refresh [POST]
+
++ request (application/json)
+
+        {
+            "accessToken": "kjahaksdjhkajshdfkasdjhf"
+        }
++ Response 200 (application/json)
+
+        {
+            "status": "DONE/FAIL",
+            "message": "Refresh sucess/Exceed maximum number of refresh"
+        }
+
+#Group Transaction
+## Request transfer money [/requestTransfer]
+### Request transfer money [POST]
++ Request (application/json)
+
+        {
+            "fromCountryId": "12",
+            "toCountryId": "16",
+            "fromUserId":15,
+            "toUserId":45454,
+            "deadline":"15/07/2017"
+            "transferMoney":500,
+            "currency":"USD"
+        }
+
+
++ Response 200 (application/json)
+
+        
+        {
+            "status": "SUCESS/FAIL",
+            "message":"remitto confirm request/have some error"
+        }
+        
+## Get list matching transfer request [/matching]
+### Get list matching transfer request [GET]
++ Request (application/json)
+
+        {
+            "transferRequestId": "12"
+        }
++ Response 200 (application/json)
+
+        [
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
+                "transferRequestId":125
+                "fromCountryId": "12",
+                "toCountryId": "16",
+                "fromUserId":15,
+                "toUserId":45454,
+                "deadline":"15/07/2017"
+                "transferMoney":500,
+                "currency":"USD"
+            },
+            {
+                "transferRequestId":1256
+                "fromCountryId": "12",
+                "toCountryId": "16",
+                "fromUserId":15,
+                "toUserId":45454,
+                "deadline":"15/07/2017"
+                "transferMoney":500,
+                "currency":"USD"
             }
+        ]
+        
+##Choose matching request [/chooseTransferPair]
+### Choose matching request [POST]
+
++ Request (application/json)
+
+        {
+            "transferRequestId": "12"
+            "matchTransferRequestId": "15"
+        }
++ Response 200 (application/json)
+
+        {
+            "status": "SUCESS/FAIL",
+            "message":"remitto confirm matching request/have some error"
+        }
+        
+##Confirm matching [/confirm]
+### Confirm matching [POST]
++ Request (application/json)
+
+        {
+            "transferRequestId": "12"
+            "matchTransferRequestId": "15"
+        }
++ Response 200 (application/json)
+
+        {
+            "status": "SUCESS/FAIL",
+            "message":"remitto confirm mathching/have some error"
+        }
+##User from Vietnam send money to remitto [/deposit]
+### User from Vietnam send money to remitto [POST]
++ Request (application/json)
+
+        {
+            "transferId": "12",
+            "transferMoney": "500",
+            "currency":"USD"
+        }
++ Response 200 (application/json)
+
+        {
+            "status": "SUCESS/FAIL",
+            "message":"remitto confirm get Money/have some error"
+        }
+        
+##Second receive user confirm get money [/confirmReceive]
+### Second receive user confirm get money [POST]
++ Request (application/json)
+
+        {
+            "transferId": "12",
+            "transferMoney": "500",
+            "currency":"USD"
+        }
++ Response 200 (application/json)
+
+        {
+            "status": "SUCESS/FAIL",
+            "message":"remitto confirm/have some error"
+        }
+##Get transfer status [/status]
+### Get transfer status [POST]
++ Request (application/json)
+
+        {
+            "transferId": "12",
+        }
++ Response 200 (application/json)
+
+        {
+            "status": "1,2,3,4,5",
+            "message":"remitto confirm/have some error"
+        }
